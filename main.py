@@ -17,6 +17,9 @@ def main(argv):
             num_points = int(a)
         elif o in ['-f', '--features']:
             num_features = int(a)
+            if num_features > 256:
+                print 'At most 256 features are allowed'
+                num_features = 256
         else:
             print 'Unhandled option ' + o
 
