@@ -3,6 +3,21 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy.stats as st
 
+def get_single_feature(feature, data):
+    num_features = len(data[0])
+    if feature > num_features:
+        print 'Invalid input; feature {0} is out of bounds'.format(feature)
+        return
+    single_feature_data = []
+    for point in data:
+        if len(point) is not num_features:
+            print 'Invalid input; control point {0} has {1} features \
+                   instead of {2}'.format(point, len(point), num_features)
+            return
+        single_feature_data.append(point[feature])
+    return single_feature_data 
+    
+
 # Generates random data points from N(0, 1)
 # e.g.
 # [[0.6, ..., 0.1],
@@ -32,22 +47,10 @@ def find_significant_features(control_data, treatment_data, pval=0.05):
         return
     for current_feature in range(0, num_features):
         # Get estimate of population mean
-        current_feature_control = []
-        for point in control_data:
-            if len(point) is not num_features:
-                print 'Invalid input; control point {0} has {1} features \
-                       instead of {2}'.format(point, len(point), num_features)
-                return
-            current_feature_control.append(point[current_feature])
+        current_feature_control = get_single_feature(current_feature, control_data)
         population_mean = np.mean(current_feature_control)
         # Get t statistic of treatment data
-        current_feature_treatment = []
-        for point in treatment_data:
-            if len(point) is not num_features:
-                print 'Invalid input; treatment point {0} has {1} features \
-                       instead of {2}'.format(point, len(point), num_features)
-                return
-            current_feature_treatment.append(point[current_feature])
+        current_feature_treatment = get_single_feature(current_feature, treatment_data)
         treatment_mean = np.mean(current_feature_treatment)
         stdev = np.std(current_feature_treatment)
         t_statistic = (treatment_mean-population_mean) / (stdev/ \
@@ -58,11 +61,20 @@ def find_significant_features(control_data, treatment_data, pval=0.05):
     return significant_features
         
 def main():
-    treatment_data = generate_random_data()
-    control_data = generate_random_data()
+    treatment_data = generate_random_data(5000, 50)
+    control_data = generate_random_data(5000, 50)
     
     significant_features = find_significant_features(control_data, \
-                                                     treatment_data)
+                                                     treatment_data, 0.01)
+    print 'Significant features:', significant_features
+    for feature in significant_features:
+        feature_in_control = get_single_feature(feature, control_data)
+        population_mean = np.mean(feature_in_control)
+        feature_in_treatment = get_single_feature(feature, treatment_data)
+        treatment_mean = np.mean(feature_in_treatment)
+        print 'Feature {0}\nmean population: {1}\nmean treated: {2}'.format( \
+                                    feature, population_mean, treatment_mean)
+        
 
 if __name__ == '__main__':
     main()
