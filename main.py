@@ -1,80 +1,37 @@
-import math
-import matplotlib.pyplot as plt
+import getopt
 import numpy as np
-import scipy.stats as st
+import sys
+import util
 
-def get_single_feature(feature, data):
-    num_features = len(data[0])
-    if feature > num_features:
-        print 'Invalid input; feature {0} is out of bounds'.format(feature)
-        return
-    single_feature_data = []
-    for point in data:
-        if len(point) is not num_features:
-            print 'Invalid input; control point {0} has {1} features \
-                   instead of {2}'.format(point, len(point), num_features)
-            return
-        single_feature_data.append(point[feature])
-    return single_feature_data 
+def main(self, num_points=5000, num_features=100):
+    print 'num_points={0}\nnum_features={1}'.format(num_points, num_features)
+    treatment_data = util.generate_random_data(num_points, num_features)
+    control_data = util.generate_random_data(num_points, num_features)
     
-
-# Generates random data points from N(0, 1)
-# e.g.
-# [[0.6, ..., 0.1],
-# [0.1, ..., -0.2],
-# ...,
-# [0.0, ..., -0.3]]
-def generate_random_data(num_points=100, num_features=30):
-    data_points = []
-    for i in range(0, num_points):
-        data_point = []
-        for feature in range(0, num_features):
-            data_point.append(np.random.rand())
-        data_points.append(data_point)
-    return data_points
-
-# Given a list of N data points with the same number of features
-# returns the indexes of the features found in Treatment but not Placebo
-# with p < 0.05
-def find_significant_features(control_data, treatment_data, pval=0.05):
-    num_points = len(treatment_data)
-    num_features = len(treatment_data[0])
-    significant_features = []
-    threshold = st.norm.ppf(1 - pval)
-    if num_points is 0 or num_features is 0:
-        print 'Invalid input; {0} points with {1} \
-               features'.format(num_points, num_features)
-        return
-    for current_feature in range(0, num_features):
-        # Get estimate of population mean
-        current_feature_control = get_single_feature(current_feature, control_data)
-        population_mean = np.mean(current_feature_control)
-        # Get t statistic of treatment data
-        current_feature_treatment = get_single_feature(current_feature, treatment_data)
-        treatment_mean = np.mean(current_feature_treatment)
-        stdev = np.std(current_feature_treatment)
-        t_statistic = (treatment_mean-population_mean) / (stdev/ \
-                                                          math.sqrt(num_points))
-        # Check if treatment data is significant on this feature
-        if t_statistic > threshold:
-            significant_features.append(current_feature)
-    return significant_features
-        
-def main():
-    treatment_data = generate_random_data(5000, 50)
-    control_data = generate_random_data(5000, 50)
-    
-    significant_features = find_significant_features(control_data, \
+    significant_features = util.find_significant_features(control_data, \
                                                      treatment_data, 0.01)
     print 'Significant features:', significant_features
+
+    max_diff = 0
+    max_diff_feature = -1
+    max_diff_population_mean = 0
+    max_diff_treatment_mean = 0
     for feature in significant_features:
-        feature_in_control = get_single_feature(feature, control_data)
+        feature_in_control = util.get_single_feature(feature, control_data)
         population_mean = np.mean(feature_in_control)
-        feature_in_treatment = get_single_feature(feature, treatment_data)
+        feature_in_treatment = util.get_single_feature(feature, treatment_data)
         treatment_mean = np.mean(feature_in_treatment)
-        print 'Feature {0}\nmean population: {1}\nmean treated: {2}'.format( \
+        print 'Feature {0}\n\tmean population: {1}\n\tmean treated: {2}'.format( \
                                     feature, population_mean, treatment_mean)
-        
+        diff = abs(population_mean - treatment_mean)
+        if diff > max_diff:
+            max_diff = diff
+            max_diff_feature = feature
+            max_diff_population_mean = population_mean
+            max_diff_treatment_mean = treatment_mean
+
+    print 'Maximum effect found in feature {0}:\nmean population: {1}\nmean treated: {2}' \
+            .format(max_diff_feature, max_diff_population_mean, max_diff_treatment_mean)   
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1:])
