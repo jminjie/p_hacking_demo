@@ -3,14 +3,31 @@ import numpy as np
 import sys
 import util
 
-def main(self, num_points=5000, num_features=100):
+def main(argv):
+    num_points=5000
+    num_features=100
+    # Parse command line arguments
+    try:
+        opts, args = getopt.getopt(argv, "p:f:", ['points=', 'features='])
+    except getopt.GetoptError as err:
+        print str(err)
+        sys.exit(2)
+    for o, a in opts:
+        if o in ['-p', '--points']:
+            num_points = int(a)
+        elif o in ['-f', '--features']:
+            num_features = int(a)
+        else:
+            print 'Unhandled option ' + o
+
     print 'num_points={0}\nnum_features={1}'.format(num_points, num_features)
     treatment_data = util.generate_random_data(num_points, num_features)
     control_data = util.generate_random_data(num_points, num_features)
-    
     significant_features = util.find_significant_features(control_data, \
                                                      treatment_data, 0.01)
     print 'Significant features:', significant_features
+    if len(significant_features) is 0:
+        return
 
     max_diff = 0
     max_diff_feature = -1
