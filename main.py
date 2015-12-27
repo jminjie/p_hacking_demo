@@ -3,10 +3,9 @@ import numpy as np
 import sys
 import util
 
-def main(argv):
-    num_points=5000
-    num_features=100
-    # Parse command line arguments
+def parse_input(argv):
+    num_points = 5000
+    num_features = 100
     try:
         opts, args = getopt.getopt(argv, "p:f:", ['points=', 'features='])
     except getopt.GetoptError as err:
@@ -24,6 +23,12 @@ def main(argv):
             print 'Unhandled option ' + o
 
     print 'num_points={0}\nnum_features={1}'.format(num_points, num_features)
+    return num_points, num_features
+    
+
+def main(argv):
+    # Parse command line arguments
+    num_points, num_features = parse_input(argv)
     treatment_data = util.generate_random_data(num_points, num_features)
     control_data = util.generate_random_data(num_points, num_features)
     significant_features = util.find_significant_features(control_data, \
