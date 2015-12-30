@@ -46,8 +46,8 @@ def main(argv):
         population_mean = np.mean(feature_in_control)
         feature_in_treatment = util.get_single_feature(feature, treatment_data)
         treatment_mean = np.mean(feature_in_treatment)
-        print 'Feature {0}\n\tmean population: {1}\n\tmean treated: {2}'.format( \
-                                    feature, population_mean, treatment_mean)
+        print 'Feature {0}\n\tmean population: {1}\n\tmean treated: {2}' \
+                .format(feature, population_mean, treatment_mean)
         diff = abs(population_mean - treatment_mean)
         if diff > max_diff:
             max_diff = diff
@@ -55,8 +55,9 @@ def main(argv):
             max_diff_population_mean = population_mean
             max_diff_treatment_mean = treatment_mean
 
-    print 'Maximum effect found in feature {0}:\nmean population: {1}\nmean treated: {2}' \
-            .format(max_diff_feature, max_diff_population_mean, max_diff_treatment_mean)   
+    print 'Maximum effect found in feature {0}:\nmean population: ' \
+            + '{1}\nmean treated: {2}'.format(max_diff_feature, \
+            max_diff_population_mean, max_diff_treatment_mean)   
 
 if __name__ == '__main__':
     main(sys.argv[1:])
