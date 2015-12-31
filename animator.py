@@ -1,3 +1,6 @@
+# Example of animation from:
+# http://stackoverflow.com/questions/9401658/matplotlib-animating-a-scatter-plot
+
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
