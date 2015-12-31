@@ -6,34 +6,40 @@ import util
 def parse_input(argv):
     num_points = 5000
     num_features = 100
+    pval = 0.01
     try:
-        opts, args = getopt.getopt(argv, "p:f:", ['points=', 'features='])
+        opts, args = getopt.getopt(argv, "n:f:p:", ['num_points=', 'features=',
+                                                    'pval='])
     except getopt.GetoptError as err:
         print str(err)
         sys.exit(2)
     for o, a in opts:
-        if o in ['-p', '--points']:
+        if o in ['-n', '--num_points']:
             num_points = int(a)
         elif o in ['-f', '--features']:
             num_features = int(a)
             if num_features > 256:
                 print 'At most 256 features are allowed'
                 num_features = 256
+        elif o in ['-p', '--pval']:
+            pval = float(a)
         else:
             print 'Unhandled option ' + o
 
-    print 'num_points={0}\nnum_features={1}'.format(num_points, num_features)
-    return num_points, num_features
+    print 'num_points={0}\nfeatures={1}\npval={2}'.format(num_points,
+                                                          num_features, pval)
+    return num_points, num_features, pval
     
 
 def main(argv):
     # Parse command line arguments
-    num_points, num_features = parse_input(argv)
+    num_points, num_features, pval = parse_input(argv)
     treatment_data = util.generate_random_data(num_points, num_features)
     control_data = util.generate_random_data(num_points, num_features)
     significant_features = util.find_significant_features(control_data, \
-                                                     treatment_data, 0.01)
-    print 'Significant features:', significant_features
+                                                     treatment_data, pval)
+    print 'Significant features with p={0}: {1}'.format(str(pval),
+                                                        significant_features)
     if len(significant_features) is 0:
         return
 
