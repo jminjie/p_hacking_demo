@@ -2,11 +2,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
-def plot_2d(data):
+def plot_2d(datapoints):
     # Create a new Figure and Axes
     fig, ax = plt.subplots()
-    x = data[0]
-    y = data[1]
+    x = []
+    y = []
+    for point in datapoints:
+        x.append(point[0])
+        y.append(point[1])
     scatter_plot = ax.scatter(x, y)
     plt.show()
 

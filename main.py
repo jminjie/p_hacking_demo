@@ -1,12 +1,13 @@
+import animator
 import getopt
 import numpy as np
 import sys
 import util
 
 def parse_input(argv):
-    num_points = 5000
-    num_features = 100
-    pval = 0.01
+    num_points = 50
+    num_features = 10
+    pval = 0.05
     try:
         opts, args = getopt.getopt(argv, "n:f:p:", ['num_points=', 'features=',
                                                     'pval='])
@@ -36,6 +37,7 @@ def main(argv):
     num_points, num_features, pval = parse_input(argv)
     treatment_data = util.generate_random_data(num_points, num_features)
     control_data = util.generate_random_data(num_points, num_features)
+    animator.plot_2d(control_data)
     significant_features = util.find_significant_features(control_data, \
                                                      treatment_data, pval)
     print 'Significant features with p={0}: {1}'.format(str(pval),

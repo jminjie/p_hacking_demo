@@ -49,10 +49,12 @@ def find_significant_features(control_data, treatment_data, pval=0.05):
         return
     for current_feature in range(0, num_features):
         # Get estimate of population mean
-        current_feature_control = get_single_feature(current_feature, control_data)
+        current_feature_control = get_single_feature(current_feature,
+                                                     control_data)
         population_mean = np.mean(current_feature_control)
         # Get t statistic of treatment data
-        current_feature_treatment = get_single_feature(current_feature, treatment_data)
+        current_feature_treatment = get_single_feature(current_feature,
+                                                       treatment_data)
         treatment_mean = np.mean(current_feature_treatment)
         stdev = np.std(current_feature_treatment)
         t_statistic = (treatment_mean-population_mean) / (stdev/ \
