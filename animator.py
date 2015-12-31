@@ -2,6 +2,26 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
+class AnimatedScatterPlot(object):
+    def __init__(self , num_points=50):
+        self.num_points = num_points
+        self.stream = self.data_stream()
+        self.fig, self.ax = plt.subplots()
+        self.ani = animation.FuncAnimation(self.fig, self.update, interval=5,
+                                           init_func=self.setup_plot, blit=True)
+
+    def setup_plot(self):
+        pass
+
+    def data_stream(self):
+        pass
+
+    def update(self, i):
+        pass
+
+    def show(self):
+        plt.show()
+
 def plot_2d(datapoints):
     # Create a new Figure and Axes
     fig, ax = plt.subplots()
@@ -13,5 +33,6 @@ def plot_2d(datapoints):
     scatter_plot = ax.scatter(x, y)
     plt.show()
 
+
 if __name__ == '__main__':
-    plot_2d([[1, 2, 3, 4], [1, 2, 3, 4]])
+    plot_2d([[1, 1], [2, 2], [3, 3]])

@@ -20,7 +20,7 @@ def parse_input(argv):
         elif o in ['-f', '--features']:
             num_features = int(a)
             if num_features > 256:
-                print 'At most 256 features are allowed'
+                print 'At most 256 features are allowed; Setting features=256.'
                 num_features = 256
         elif o in ['-p', '--pval']:
             pval = float(a)
