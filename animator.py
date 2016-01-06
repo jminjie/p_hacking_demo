@@ -33,10 +33,8 @@ class AnimatedScatterPlot(object):
 
     def data_stream(self):
         # Generator function that yields the next set of points
-        # TODO: The while True is just so we can see the animation for longer
-        while True:
-            for data_points in self.scatter_plots:
-                yield data_points
+        for data_points in self.scatter_plots:
+            yield data_points
 
     def update(self, i):
         # Set x and y data
